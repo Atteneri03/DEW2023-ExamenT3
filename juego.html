@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        :root {
+            --size: 30px;
+        }
+        table {
+            border-collapse: collapse;
+        }
+
+        td {
+            border: 1px solid black;
+            height: var(--size);
+            width: var(--size);
+            cursor:not-allowed;
+        }
+
+        span {
+            padding: 5px;
+            color: grey;
+        }
+
+        .free {
+            background-color: grey;
+            cursor: pointer;
+        }
+
+        .player1 {
+            background-color: black;
+        }
+        
+        .player2 {
+            background-color: white;
+        }
+
+        .red {
+            color: red;
+        }
+        
+        </style>
+</head>
+<body>
+    <h1>Juego</h1>
+    <p>Jugador 1: <span id="player1" class="player1">0</span></p>
+    <p>Jugador 2: <span id="player2" class="player2">0</span></p>
+    <h3>Turno para 
+        <span id="turn" class="player1">Jugador 1</span>.
+    </h3> 
+    <h3>Tiempo para cambiar de turno:
+        <span id="time">5</span> 
+    </h3>
+    <table id="tabla"></table>
+    <p><button onclick="reset()">Reiniciar partida</button></p>
+    <h2 id="result">--</h2>
+ 
+    <script>
+        //puntos de cada jugador
+        var total1 = 0;
+        var total2 = 0;
+
+        generate();
+        // start();
+
+    //Genero el tablero
+    function generate(){
+        let rows = 6; 
+      
+        const table = document.querySelector("table");
+        for (let i = 0; i < rows; i++) {
+            let tr = document.createElement("tr");
+            table.append(tr);
+            for (let j = 0; j < rows; j++) {
+                let td = document.createElement("td");
+                //td.class = "free";
+                td.setAttribute("class","free");
+                //td.onclick = change(td);
+                td.onclick = () => change(td);
+                tr.append(td);
+                }
+        }
+    }
+
+    //Cambio la casilla dependiendo de quien sea el jugador
+    function change(cell) {
+        const player = document.querySelector("#turn");
+        const points1 = document.querySelector("#player1");
+        const points2 = document.querySelector("#player2");
+
+        //si está libre y está jugando el jugador1
+        if(cell.getAttribute("class") == "free" && player.getAttribute("class")=="player1"){
+            //cambio la clase de la celda para que sea jugador1(cambia a negro)
+            cell.setAttribute("class","player1");
+            //sumo un punto a jugador1
+            total1++;
+            points1.innerHTML = total1;
+            //cambia de jugador
+            player.setAttribute("class","player2");
+            player.innerHTML = "Jugador 2";
+
+    
+        //si está libre y está jugando el jugador2
+        }else if(cell.getAttribute("class") == "free" && player.getAttribute("class")=="player2"){
+            //cambio la clase de la celda para que sea jugador2(cambia a blanco)
+            cell.setAttribute("class","player2");
+            //sumo un punto a jugador2
+            total2++;
+            points2.innerHTML = total2;
+            //cambia de jugador
+            player.setAttribute("class","player1");
+            player.innerHTML = "Jugador 1";
+            
+
+        } 
+
+        //Compruebo si el tablero esta lleno y anuncio el ganador
+        let tablero = document.querySelectorAll(".free");
+        const result = document.querySelector("#result");
+        if(tablero.length == 0 ){
+            if(total1 > total2){
+                result.innerHTML = "Partida terminada, Ganador: Jugador1";
+                reset();
+            } else if(total2 > total1){
+                result.innerHTML = "Partida terminada, Ganador: Jugador2";
+                reset();
+            }else {
+                result.innerHTML = "Partida terminada, Empate";
+            }
+            
+        }
+
+    
+    }
+
+    //reinicio el tablero
+    function reset() {
+        
+        var tablero = document.getElementById("tabla");
+        const points1 = document.querySelector("#player1");
+        const points2 = document.querySelector("#player2");
+        const player = document.querySelector("#turn");
+
+
+        // Recorro todas las filas de la tabla
+        for (var i = 0, fila; fila = tablero.rows[i]; i++) {
+            // Recorro todas las celdas de la fila
+            for (var j = 0, celda; celda = fila.cells[j]; j++) {
+                // Modifico el atributo class de la celda
+                celda.setAttribute("class", "free");
+            }
+        }
+
+        //pongo el turno a jugador 1
+        player.setAttribute("class","player1");
+        player.innerHTML = "Jugador 1";
+
+    
+        //pongo las puntuaciones a 0
+        total1 = 0;
+        total2 = 0;
+        points1.innerHTML = total1;
+        points2.innerHTML = total2;
+
+    }
+
+//No funciona el timer
+    // function start(){
+    //     const counter = document.getElementById("time");
+    //     if(counter.textContent != "0"){
+    //         setInterval(decrementCounter, 1000);
+    //     }
+    // }
+
+    // function decrementCounter(){
+    //   const counter = document.getElementById("time");
+    //   counter.textContent--;
+    // }
+
+
+    </script>
+</body>
+</html>
